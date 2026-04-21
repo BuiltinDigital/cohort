@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ===== Brand Palette ===== */
+  --color-sky: #4AB4E8;
+  --color-sky-bright: #5EC4F4;
+  --color-sky-soft: #E8F5FC;
+  --color-sky-ghost: #F4FAFD;
+
+  --color-navy: #0E2A5C;
+  --color-navy-deep: #081B3D;
+  --color-navy-mid: #1A3B73;
+
+  --color-ink: #0A1F44;
+  --color-paper: #FFFFFF;
+  --color-off: #F7FAFD;
+  --color-muted: #6B7A93;
+  --color-muted-soft: #9BA7BD;
+  --color-line: #E4EAF2;
+  --color-line-soft: #EEF2F7;
+
+  --color-good: #1DB77A;
+  --color-good-soft: #E8F7F0;
+  --color-warn: #FF9D2E;
+  --color-warn-soft: #FFF5E8;
+  --color-risk: #E53E5C;
+  --color-risk-soft: #FFF0F3;
+  --color-purple: #7B4EC9;
+  --color-purple-soft: #F0EBFA;
+
+  /* ===== Fonts ===== */
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* ===== Shadows ===== */
+  --shadow-card: 0 1px 3px rgba(10,31,68,0.04), 0 0 0 1px rgba(10,31,68,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(10,31,68,0.06), 0 2px 4px -2px rgba(10,31,68,0.04);
+  --shadow-lg: 0 10px 20px -3px rgba(10,31,68,0.08), 0 4px 6px -4px rgba(10,31,68,0.04);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-off);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(107,122,147,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(107,122,147,0.35); }
+
+/* Barlow utility */
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Pulse animation for live dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Fade up animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

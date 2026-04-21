@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohort — iPhone Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #4AB4E8;
+    --sky-bright: #5EC4F4;
+    --sky-soft: #E8F5FC;
+    --sky-ghost: #F4FAFD;
+    --navy: #0E2A5C;
+    --navy-deep: #081B3D;
+    --ink: #0A1F44;
+    --paper: #FFFFFF;
+    --off: #F7FAFD;
+    --muted: #6B7A93;
+    --muted-soft: #9BA7BD;
+    --line: #E4EAF2;
+    --line-soft: #EEF2F7;
+    --good: #1DB77A;
+    --good-soft: #E8F7F0;
+    --warn: #FF9D2E;
+    --warn-soft: #FFF5E8;
+    --risk: #E53E5C;
+    --risk-soft: #FFF0F3;
+    --purple: #7B4EC9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  .device-frame {
+    width: 393px;
+    height: 852px;
+    background: #000;
+    border-radius: 50px;
+    padding: 12px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 0 0 2px #333;
+    position: relative;
+  }
+
+  .device-frame::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 32px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+  }
+
+  .device-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--off);
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .phone-scroll {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .phone-scroll::-webkit-scrollbar { display: none; }
+
+  /* STATUS BAR */
+  .status-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px 8px;
+    background: var(--navy-deep);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .status-bar .time { font-weight: 700; }
+  .status-icons { display: flex; gap: 5px; font-size: 12px; }
+
+  /* NAV HEADER */
+  .nav-header {
+    background: var(--navy-deep);
+    padding: 6px 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 36px;
+    z-index: 40;
+  }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: white;
+    letter-spacing: -0.01em;
+  }
+
+  .nav-logo .dot { color: var(--sky); }
+
+  .nav-user {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--sky);
+    color: var(--navy-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--navy-deep);
+    padding: 0 16px 12px;
+    overflow-x: auto;
+    position: sticky;
+    top: 84px;
+    z-index: 39;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.55);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .nav-tab.active {
+    background: var(--sky);
+    color: var(--navy-deep);
+  }
+
+  /* CONTENT */
+  .content { padding: 16px; }
+
+  .font-display { font-family: 'Barlow Condensed', sans-serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* LIVE BAR */
+  .live-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--good);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--good);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* HERO CARD */
+  .hero-card {
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-bright) 100%);
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+  }
+
+  .hero-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 1;
+    margin: 4px 0 12px;
+  }
+
+  .hero-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 64px;
+    line-height: 0.85;
+    letter-spacing: -0.03em;
+    position: relative;
+  }
+
+  .hero-score-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .hero-sub { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+
+  /* STAT CARDS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-value .unit { font-size: 15px; color: var(--muted); }
+
+  .stat-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .stat-sub strong { color: var(--ink); }
+
+  .good { color: var(--good); }
+  .risk { color: var(--risk); }
+  .warn { color: var(--warn); }
+
+  /* SECTION */
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    color: var(--navy);
+    margin: 16px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-badge {
+    background: var(--sky-soft);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* MEMBER CARDS */
+  .member-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+
+  .member-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .member-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .member-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .member-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .member-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .member-stat-label {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .member-stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .member-stat-val .unit { font-size: 11px; opacity: 0.6; }
+
+  .member-stat-delta { font-size: 9px; font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
+
+  .progress-bar {
+    height: 5px;
+    background: var(--line);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky), var(--navy));
+    border-radius: 3px;
+  }
+
+  /* RISK CARD */
+  .risk-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+
+  .risk-card.alert {
+    border-color: rgba(229,62,92,0.3);
+    background: linear-gradient(180deg, var(--risk-soft) 0%, var(--paper) 40%);
+  }
+
+  .risk-card.warn-card {
+    border-color: rgba(255,157,46,0.3);
+    background: linear-gradient(180deg, var(--warn-soft) 0%, var(--paper) 40%);
+  }
+
+  .risk-pill {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 4px;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .risk-pill.alert { background: var(--risk); }
+  .risk-pill.warn-pill { background: var(--warn); }
+  .risk-pill.ok { background: var(--good); }
+
+  .risk-owner { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+
+  .risk-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--navy);
+    line-height: 1.05;
+    margin-bottom: 2px;
+  }
+
+  .risk-client { font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+
+  .risk-bar {
+    height: 6px;
+    background: var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+    position: relative;
+  }
+
+  .risk-bar-fill { height: 100%; border-radius: 3px; }
+
+  .risk-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
+  }
+
+  .risk-action {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .impact {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(255,255,255,0.15);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+  }
+
+  /* LEADERBOARD */
+  .leaderboard {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .lb-row:last-child { border-bottom: none; }
+
+  .lb-row.current {
+    background: var(--sky-ghost);
+    margin: 0 -8px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    border-bottom: none;
+  }
+
+  .lb-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .lb-info { flex: 1; min-width: 0; }
+  .lb-name { font-weight: 600; font-size: 13px; color: var(--navy); }
+  .lb-sub { font-size: 9px; color: var(--muted); }
+
+  .lb-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .lb-rank {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--navy);
+    width: 28px;
+    text-align: center;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 24px;
+    z-index: 50;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .bottom-nav-item.active { color: var(--sky); }
+
+  .bottom-nav-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  /* ASK COHORT FAB */
+  .fab {
+    position: absolute;
+    bottom: 80px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    background: var(--sky);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    box-shadow: 0 4px 16px rgba(74,180,232,0.4);
+    z-index: 45;
+    cursor: pointer;
+    animation: fab-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes fab-pulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(74,180,232,0.4); }
+    50% { box-shadow: 0 4px 24px rgba(74,180,232,0.6); }
+  }
+
+  .spacer { height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="device-frame">
+  <div class="device-screen">
+    <div class="phone-scroll">
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <span class="status-icons">
+          <span>&#9679;&#9679;&#9679;&#9679;</span>
+          <span>&#128267;</span>
+        </span>
+      </div>
+
+      <!-- Nav Header -->
+      <div class="nav-header">
+        <div class="nav-logo">COHORT<span class="dot">.</span></div>
+        <div class="nav-user">R</div>
+      </div>
+
+      <!-- Nav Tabs -->
+      <div class="nav-tabs">
+        <div class="nav-tab active">Overview</div>
+        <div class="nav-tab">Campaigns</div>
+        <div class="nav-tab">Pipeline</div>
+        <div class="nav-tab">Market</div>
+        <div class="nav-tab">Brands</div>
+        <div class="nav-tab">More</div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+
+        <!-- Live -->
+        <div class="live-bar">
+          <div class="live-dot"></div>
+          <span>Live · updated 4 min ago</span>
+          <span style="margin-left: auto; font-family: 'JetBrains Mono'; font-size: 10px;">Q2 · 47d left</span>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero-card">
+          <div class="hero-label">My Team</div>
+          <div class="hero-title">Rachel's Team</div>
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <div class="hero-score">87</div>
+            <div>
+              <div class="hero-score-label">Delivery Confidence</div>
+              <div class="hero-sub">↑ 4 pts · On track</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">Revenue YTD</div>
+            <div class="stat-value">£4.2<span class="unit">m</span></div>
+            <div class="stat-sub"><strong>95.8%</strong> of target</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Commission</div>
+            <div class="stat-value">£218<span class="unit">k</span></div>
+            <div class="stat-sub good">+11% vs Q1</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Campaigns</div>
+            <div class="stat-value">18</div>
+            <div class="stat-sub"><strong>2</strong> at risk</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pipeline</div>
+            <div class="stat-value">£2.9<span class="unit">m</span></div>
+            <div class="stat-sub">Q3 target: £3.4m</div>
+          </div>
+        </div>
+
+        <!-- Salespeople -->
+        <div class="section-title">My Salespeople <span class="section-badge">2</span></div>
+
+        <div class="member-card">
+          <div class="member-header">
+            <div class="member-avatar" style="background: #7B4EC9;">A</div>
+            <div>
+              <div class="member-name">Alicia</div>
+              <div class="member-sub">Publicis · Starcom, Zenith, Spark, Digitas</div>
+            </div>
+          </div>
+          <div class="member-stats">
+            <div>
+              <div class="member-stat-label">Delivered</div>
+              <div class="member-stat-val">£1.8<span class="unit">m</span></div>
+              <div class="member-stat-delta good">↑ 14%</div>
+            </div>
+            <div>
+              <div class="member-stat-label">Score</div>
+              <div class="member-stat-val">89</div>
+              <div class="member-stat-delta good">↑ 3 pts</div>
+            </div>
+            <div>
+              <div class="member-stat-label">Campaigns</div>
+              <div class="member-stat-val">10</div>
+              <div class="member-stat-delta" style="color: var(--muted);">1 at risk</div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 82%;"></div></div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-header">
+            <div class="member-avatar" style="background: #E89F4A;">R</div>
+            <div>
+              <div class="member-name">Renita</div>
+              <div class="member-sub">Omnicom · OMD, PHD, Hearts & Science</div>
+            </div>
+          </div>
+          <div class="member-stats">
+            <div>
+              <div class="member-stat-label">Delivered</div>
+              <div class="member-stat-val">£2.4<span class="unit">m</span></div>
+              <div class="member-stat-delta good">↑ 8%</div>
+            </div>
+            <div>
+              <div class="member-stat-label">Score</div>
+              <div class="member-stat-val">85</div>
+              <div class="member-stat-delta warn">↓ 2 pts</div>
+            </div>
+            <div>
+              <div class="member-stat-label">Campaigns</div>
+              <div class="member-stat-val">8</div>
+              <div class="member-stat-delta" style="color: var(--muted);">1 risk · 2 watch</div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 78%;"></div></div>
+        </div>
+
+        <!-- Needs Attention -->
+        <div class="section-title">Needs Attention <span class="section-badge">3</span></div>
+
+        <div class="risk-card alert">
+          <span class="risk-pill alert">At Risk Now</span>
+          <div class="risk-owner">Alicia · Starcom</div>
+          <div class="risk-name">Audi — Easter Drive</div>
+          <div class="risk-client">Direct + Programmatic · £180k</div>
+          <div class="risk-bar"><div class="risk-bar-fill" style="width: 54%; background: var(--risk);"></div></div>
+          <div class="risk-meta">
+            <span>42.1k / <strong>63k</strong></span>
+            <span class="risk">-33%</span>
+          </div>
+          <button class="risk-action">Reallocate inventory <span class="impact">+18%</span></button>
+        </div>
+
+        <div class="risk-card warn-card">
+          <span class="risk-pill warn-pill">At Risk Soon</span>
+          <div class="risk-owner">Renita · OMD</div>
+          <div class="risk-name">Pepsi — Summer Sizzle</div>
+          <div class="risk-client">Content + Partnership · £290k</div>
+          <div class="risk-bar"><div class="risk-bar-fill" style="width: 71%; background: var(--warn);"></div></div>
+          <div class="risk-meta">
+            <span>340k / <strong>480k</strong></span>
+            <span class="warn">-7% trend</span>
+          </div>
+          <button class="risk-action">Activate 'Gen Z' segment <span class="impact">+11%</span></button>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="section-title">Manager Leaderboard</div>
+
+        <div class="leaderboard">
+          <div class="lb-row">
+            <div class="lb-avatar" style="background: var(--purple);">G</div>
+            <div class="lb-info">
+              <div class="lb-name">Gary</div>
+              <div class="lb-sub">WPP + Dentsu</div>
+            </div>
+            <div class="lb-val">£4.9m</div>
+            <div class="lb-rank">#1</div>
+          </div>
+          <div class="lb-row current">
+            <div class="lb-avatar" style="background: var(--sky);">R</div>
+            <div class="lb-info">
+              <div class="lb-name">Rachel (you)</div>
+              <div class="lb-sub">Publicis + Omnicom</div>
+            </div>
+            <div class="lb-val">£4.2m</div>
+            <div class="lb-rank">#2</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-avatar" style="background: var(--warn);">E</div>
+            <div class="lb-info">
+              <div class="lb-name">Elise</div>
+              <div class="lb-sub">Havas + IPG</div>
+            </div>
+            <div class="lb-val">£3.4m</div>
+            <div class="lb-rank">#3</div>
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="bottom-nav-item active">
+          <div class="bottom-nav-icon">◆</div>
+          Overview
+        </div>
+        <div class="bottom-nav-item">
+          <div class="bottom-nav-icon">▣</div>
+          Campaigns
+        </div>
+        <div class="bottom-nav-item">
+          <div class="bottom-nav-icon">◈</div>
+          Pipeline
+        </div>
+        <div class="bottom-nav-item">
+          <div class="bottom-nav-icon">◉</div>
+          Market
+        </div>
+        <div class="bottom-nav-item">
+          <div class="bottom-nav-icon">⋯</div>
+          More
+        </div>
+      </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab">✦</div>
+  </div>
+</div>
+
+</body>
+</html>

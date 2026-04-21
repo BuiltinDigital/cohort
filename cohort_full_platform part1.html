@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohort — Immediate Media Sales OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #4AB4E8;
+    --sky-bright: #5EC4F4;
+    --sky-soft: #E8F5FC;
+    --sky-ghost: #F4FAFD;
+    --navy: #0E2A5C;
+    --navy-deep: #081B3D;
+    --navy-mid: #1A3B73;
+    --ink: #0A1F44;
+    --paper: #FFFFFF;
+    --off: #F7FAFD;
+    --muted: #6B7A93;
+    --muted-soft: #9BA7BD;
+    --line: #E4EAF2;
+    --line-soft: #EEF2F7;
+
+    --good: #1DB77A;
+    --good-soft: #E8F7F0;
+    --warn: #FF9D2E;
+    --warn-soft: #FFF5E8;
+    --risk: #E53E5C;
+    --risk-soft: #FFF0F3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--off);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  button { font-family: inherit; cursor: pointer; border: none; }
+
+  /* APP SHELL */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--navy-deep);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .logo {
+    padding: 22px 24px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .logo-mark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 0.9;
+    color: var(--paper);
+    letter-spacing: -0.01em;
+  }
+
+  .logo-mark .dot { color: var(--sky); }
+
+  .logo-sub {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--good);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--good);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .nav-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+    padding: 18px 24px 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--paper); }
+
+  .nav-item.active {
+    background: rgba(74, 180, 232, 0.12);
+    color: var(--paper);
+    border-left-color: var(--sky);
+  }
+
+  .nav-icon {
+    width: 18px; text-align: center;
+    font-size: 14px; opacity: 0.85;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--sky);
+    color: var(--navy-deep);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-badge.risk { background: var(--risk); color: var(--paper); }
+
+  .integration-status {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .integration-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .integration-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .int-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    margin-right: 7px; display: inline-block;
+  }
+
+  .int-dot.ok { background: var(--good); }
+  .int-dot.warn { background: var(--warn); }
+
+  .int-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .sidebar-footer {
+    padding: 14px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--sky);
+    color: var(--navy-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .user-name { font-size: 12.5px; color: var(--paper); font-weight: 600; }
+  .user-role { font-size: 10.5px; color: rgba(255,255,255,0.5); }
+
+  /* MAIN CONTAINER */
+  .main-container {
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .page-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--navy);
+    letter-spacing: -0.005em;
+  }
+
+  .page-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .topbar-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .chip {
+    padding: 7px 14px;
+    background: var(--sky-soft);
+    color: var(--navy);
+    font-size: 11.5px;
+    font-weight: 600;
+    border-radius: 18px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .btn {
+    padding: 9px 16px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .btn-primary { background: var(--navy); color: var(--paper); }
+  .btn-primary:hover { background: var(--sky); }
+
+  .btn-secondary {
+    background: var(--paper);
+    color: var(--navy);
+    border: 1px solid var(--line);
+  }
+
+  .btn-secondary:hover { background: var(--off); border-color: var(--sky); }
+
+  /* PAGE CONTAINER */
+  .page {
+    padding: 24px 32px 48px;
+    display: none;
+  }
+
+  .page.active { display: block; }
+
+  /* HOME PAGE */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .score-card {
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-bright) 100%);
+    border-radius: 14px;
+    padding: 28px;
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+    min-height: 220px;
+  }
+
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border: 2px solid rgba(255,255,255,0.18);
+    border-radius: 50%;
+  }
+
+  .score-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .score-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 140px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    position: relative;
+  }
+
+  .score-value .small { font-size: 44px; opacity: 0.7; }
+
+  .score-status {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 4px 0 10px;
+    position: relative;
+  }
+
+  .score-delta {
+    display: inline-flex;
+    gap: 6px;
+    background: rgba(255,255,255,0.22);
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+
+  .stat-value .unit { font-size: 18px; color: var(--muted); font-weight: 600; }
+
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .stat-sub strong { color: var(--ink); font-weight: 600; }
+
+  /* SECTION HEADING */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 24px 0 14px;
+  }
+
+  .section-heading h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--navy);
+    letter-spacing: 0.01em;
+  }
+
+  .section-heading .count {
+    background: var(--sky-soft);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 10px;
+    margin-left: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .link {
+    font-size: 12px;
+    color: var(--sky);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* RISK CARDS */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .risk-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .risk-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(14,42,92,0.08);
+  }
+
+  .risk-card.alert { border-color: var(--risk); background: linear-gradient(180deg, var(--risk-soft) 0%, var(--paper) 40%); }
+  .risk-card.warn { border-color: var(--warn); background: linear-gradient(180deg, var(--warn-soft) 0%, var(--paper) 40%); }
+
+  .risk-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .risk-pill.alert { background: var(--risk); color: var(--paper); }
+  .risk-pill.warn { background: var(--warn); color: var(--paper); }
+  .risk-pill.ok { background: var(--good); color: var(--paper); }
+
+  .risk-campaign {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    color: var(--navy);
+    line-height: 1.05;
+    margin-bottom: 3px;
+  }
+
+  .risk-client { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+
+  .risk-bar-wrap {
+    height: 8px;
+    background: var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .risk-bar { height: 100%; border-radius: 4px; }
+
+  .risk-target-line {
+    position: absolute;
+    top: -3px; bottom: -3px;
+    width: 2px;
+    background: var(--navy);
+  }
+
+  .risk-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 12px;
+  }
+
+  .risk-meta strong { color: var(--navy); font-weight: 600; }
+
+  .risk-action {
+    background: var(--navy);
+    color: var(--paper);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  .risk-action:hover { background: var(--sky); }
+
+  .impact {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(255,255,255,0.15);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+  }
+
+  /* TABLE */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .table thead th {
+    text-align: left;
+    padding: 12px 18px;
+    background: var(--off);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .table tbody td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: middle;
+  }
+
+  .table tbody tr:last-child td { border-bottom: none; }
+  .table tbody tr { cursor: pointer; transition: background 0.1s; }
+  .table tbody tr:hover { background: var(--sky-ghost); }
+
+  .campaign-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+    letter-spacing: 0.005em;
+  }
+
+  .campaign-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .channel-chip {
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-right: 3px;
+  }
+
+  .chip-direct { background: var(--sky-soft); color: var(--navy); }
+  .chip-prog { background: #F0EBFA; color: #5A3EA1; }
+  .chip-part { background: #FFF0E8; color: #B84A1E; }
+  .chip-content { background: #E8F7F0; color: #1F7A4D; }
+
+  .score-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-mini-bar {
+    width: 50px; height: 6px;
+    background: var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-mini-fill { height: 100%; border-radius: 3px; }
+
+  .score-mini-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 22px;
+  }
+
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .status-dot::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+  }
+
+  .status-dot.ok { color: var(--good); }
+  .status-dot.ok::before { background: var(--good); }
+  .status-dot.warn { color: var(--warn); }
+  .status-dot.warn::before { background: var(--warn); }
+  .status-dot.risk { color: var(--risk); }
+  .status-dot.risk::before { background: var(--risk); }
+
+  /* CAMPAIGN DETAIL MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 31, 68, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 880px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .modal-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .modal-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .close-btn {
+    background: var(--off);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    color: var(--muted);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-body { padding: 24px 28px 28px; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .detail-stat {
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+
+  .detail-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .detail-stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .trajectory {
+    background: var(--off);
+    padding: 24px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+  }
+
+  .trajectory-title {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .trajectory-chart {
+    height: 140px;
+    position: relative;
+  }
+
+  .trajectory-chart svg { width: 100%; height: 100%; }
+
+  .intervention-list { margin-top: 20px; }
+
+  .intervention {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .intervention-icon {
+    width: 32px; height: 32px;
+    background: var(--sky-soft);
+    color: var(--navy);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .intervention-text { flex: 1; }
+
+  .intervention-title { font-size: 13px; font-weight: 600; color: var(--navy); }
+  .intervention-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .intervention-impact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--good);
+    font-weight: 600;
+  }
+
+  /* REPORT PAGE */
+  .report-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 860px;
+    margin-bottom: 20px;
+  }
+
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--navy);
+    margin-bottom: 24px;
+  }
+
+  .report-title-block h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .report-meta-row {
+    display: flex;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .report-meta-row strong { color: var(--ink); }
+
+  .report-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .report-stat {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+
+  .report-stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .report-stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: var(--navy);
+    line-height: 1;
+    margin: 6px 0 4px;
+  }
+
+  .report-stat-delta {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .report-section {
+    margin-bottom: 24px;
+  }
+
+  .report-section h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--navy);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .report-section p {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .report-section ul {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.7;
+    padding-left: 20px;
+  }
+
+  /* INTEGRATIONS PAGE */
+  .integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .integration-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .int-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .int-logo {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: var(--sky-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--navy);
+  }
+
+  .int-info h5 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--navy);
+  }
+
+  .int-info p { font-size: 11px; color: var(--muted); }
+
+  .int-status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .int-status .val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* AUDIENCE PAGE */
+  .audience-wrap {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+  }
+
+  .filter-panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .filter-group { margin-bottom: 16px; }
+
+  .filter-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter-chip {
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .filter-chip.active { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+
+  .audience-result {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--paper);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .audience-reach {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 96px;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--sky-bright);
+  }
+
+  .audience-reach-label { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+
+  .audience-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .ab-stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+
+  .ab-stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+
+  .brand-reach {
+    margin-top: 20px;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .brand-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .brand-bar {
+    height: 100%;
+    background: var(--sky);
+    border-radius: 3px;
+  }
+
+  .brand-name { min-width: 140px; }
+  .brand-val { font-family: 'JetBrains Mono', monospace; min-width: 60px; text-align: right; }
+
+  /* COMMISSION PAGE */
+  .comm-hero {
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-bright) 100%);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .comm-hero::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 220px; height: 220px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+  }
+
+  .comm-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .comm-pool {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 80px;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    position: relative;
+  }
+
+  .comm-pool .unit { font-size: 32px; opacity: 0.7; }
+  .comm-sub { font-size: 13px; opacity: 0.85; margin-top: 4px; position: relative; }
+
+  .comm-members {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .member-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr 100px 120px;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .member-row:last-child { border-bottom: none; }
+
+  .member-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--navy);
+  }
+
+  .member-role { font-size: 11px; color: var(--muted); }
+
+  .member-metric {
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .member-metric .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .member-multi {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--good);
+  }
+
+  .member-payout {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--navy);
+  }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">COHORT<span class="dot">.</span></div>
+      <div class="logo-sub">Immediate · Sales OS</div>
+    </div>
+
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      <span>Live · updated 4 min ago</span>
+    </div>
+
+    <div class="nav-label">Workspace</div>
+    <div class="nav-item active" data-page="home">
+      <span class="nav-icon">◉</span> Home
+    </div>
+    <div class="nav-item" data-page="campaigns">
+      <span class="nav-icon">◆</span> Campaigns
+      <span class="nav-badge">12</span>
+    </div>
+    <div class="nav-item" data-page="audience">
+      <span class="nav-icon">◈</span> Audience
+    </div>
+    <div class="nav-item" data-page="commission">
+      <span class="nav-icon">◐</span> Pod Commission
+    </div>
+
+    <div class="nav-label">Intelligence</div>
+    <div class="nav-item" data-page="report">
+      <span class="nav-icon">▤</span> Weekly Report
+      <span class="nav-badge risk">New</span>
+    </div>
+    <div class="nav-item" data-page="integrations">
+      <span class="nav-icon">⇌</span> Integrations
+    </div>
+
+    <div class="integration-status">
+      <div class="integration-label">Data Sources</div>
+      <div class="integration-item">
+        <span><span class="int-dot ok"></span>Salesforce</span>
+        <span class="int-time">4m</span>
+      </div>
+      <div class="integration-item">
+        <span><span class="int-dot ok"></span>Google Ad Manager</span>
+        <span class="int-time">2m</span>
+      </div>
+      <div class="integration-item">
+        <span><span class="int-dot ok"></span>Atomic</span>
+        <span class="int-time">6m</span>
+      </div>
+      <div class="integration-item">
+        <span><span class="int-dot warn"></span>Excel / Partnerships</span>
+        <span class="int-time">1h</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="avatar">R</div>
+      <div>
+        <div class="user-name">Rachel</div>
+        <div class="user-role">Commercial Lead</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="page-title">Publicis Pod / Home</div>
+        <div class="page-sub" id="page-sub">Starcom · Zenith · Spark · Digitas · Publicis Media</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="chip">Q2 2026 · 47 days remaining</div>
+        <button class="btn btn-secondary">Filter</button>
+        <button class="btn btn-primary">+ New Campaign</button>
+      </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+
+      <div class="hero-grid">
+        <div class="score-card">
+          <div class="score-label">Delivery Confidence</div>
+          <div class="score-value">87<span class="small">/100</span></div>
+          <div class="score-status">On track — 2 watchpoints</div>
+          <div class="score-delta">↑ 4 pts past 7d</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-label">Delivered Revenue YTD</div>
+            <div class="stat-value">£2.84<span class="unit">m</span></div>
+            <div class="stat-sub"><strong>96.2%</strong> of contracted</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Pod Commission Pool</div>
+            <div class="stat-value">£142<span class="unit">k</span></div>
+            <div class="stat-sub">Tracking <strong>+8%</strong> vs Q1</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Active Campaigns</div>
+            <div class="stat-value">12</div>
+            <div class="stat-sub"><strong>7</strong> direct · <strong>3</strong> prog · <strong>2</strong> partner</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Audience Reach</div>
+            <div class="stat-value">2.1<span class="unit">m</span></div>
+            <div class="stat-sub"><strong>8</strong> segments active</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <h3>Needs Attention <span class="count">3</span></h3>
+        <span class="link" onclick="switchPage('campaigns')">View all campaigns →</span>
+      </div>
+
+      <div class="risk-grid">
+        <div class="risk-card alert" onclick="openCampaign('audi')">
+          <span class="risk-pill alert">At Risk Now</span>
+          <div class="risk-campaign">Audi — Easter Drive</div>
+          <div class="risk-client">Starcom · Direct + Programmatic</div>
+          <div class="risk-bar-wrap">
+            <div class="risk-bar" style="width: 54%; background: var(--risk);"></div>
+            <div class="risk-target-line" style="left: 82%;"></div>
+          </div>
+          <div class="risk-meta">
+            <span>42.1k / <strong>63k</strong></span>
+            <span style="color: var(--risk);">-33%</span>
+          </div>
+          <button class="risk-action">
+            Reallocate inventory
+            <span class="impact">+18% pred.</span>
+          </button>
+        </div>
+
+        <div class="risk-card warn" onclick="openCampaign('waitrose')">
+          <span class="risk-pill warn">At Risk Soon</span>
+          <div class="risk-campaign">Waitrose — Summer Fresh</div>
+          <div class="risk-client">Zenith · Content + Audience</div>
+          <div class="risk-bar-wrap">
+            <div class="risk-bar" style="width: 71%; background: var(--warn);"></div>
+            <div class="risk-target-line" style="left: 78%;"></div>
+          </div>
+          <div class="risk-meta">
+            <span>380k / <strong>540k</strong></span>
+            <span style="color: var(--warn);">-9% trend</span>
+          </div>
+          <button class="risk-action">
+            Activate 'Foodies 35+'
+            <span class="impact">+12% pred.</span>
+          </button>
+        </div>
+
+        <div class="risk-card" onclick="openCampaign('virgin')">
+          <span class="risk-pill ok">Action Ready</span>
+          <div class="risk-campaign">Virgin Atlantic — Long-Haul</div>
+          <div class="risk-client">Spark Foundry · Partnership</div>
+          <div class="risk-bar-wrap">
+            <div class="risk-bar" style="width: 91%; background: var(--good);"></div>
+            <div class="risk-target-line" style="left: 88%;"></div>
+          </div>
+          <div class="risk-meta">
+            <span>218k / <strong>240k</strong></span>
+            <span style="color: var(--good);">+3% ahead</span>
+          </div>
+          <button class="risk-action">
+            Upsell Q3 renewal
+            <span class="impact">£64k opp.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <h3>Live Campaigns <span class="count">12</span></h3>
+        <span class="link">Filter · Export →</span>
+      </div>
+
+      <div class="card">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Agency</th>
+              <th>Channel</th>
+              <th>Delivery Score</th>
+              <th>Pacing</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="openCampaign('audi')">
+              <td>
+                <div class="campaign-name">Audi — Easter Drive</div>
+                <div class="campaign-sub">Ends in 14 days · £180k contract</div>
+              </td>
+              <td>Starcom</td>
+              <td><span class="channel-chip chip-direct">Direct</span><span class="channel-chip chip-prog">Prog</span></td>
+              <td>
+                <div class="score-mini">
+                  <div class="score-mini-bar"><div class="score-mini-fill" style="width: 54%; background: var(--risk);"></div></div>
+                  <span class="score-mini-val" style="color: var(--risk);">54</span>
+                </div>
+              </td>
+              <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">67% / 82%</td>
+              <td><span class="status-dot risk">At risk</span></td>
+            </tr>
+            <tr onclick="openCampaign('waitrose')">
+              <td>
+                <div class="campaign-name">Waitrose — Summer Fresh</div>
+                <div class="campaign-sub">Ends in 28 days · £310k contract</div>
+              </td>
+              <td>Zenith</td>
+              <td><span class="channel-chip chip-part">Partner</span><span class="channel-chip chip-content">Content</span></td>
+              <td>
+                <div class="score-mini">
+                  <div class="score-mini-bar"><div class="score-mini-fill" style="width: 71%; background: var(--warn);"></div></div>
+                  <span class="score-mini-val" style="color: var(--warn);">71</span>
+                </div>
+              </td>
+              <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">70% / 78%</td>
+              <td><span class="status-dot warn">Watch</span></td>
+            </tr>
+            <tr onclick="openCampaign('virgin')">
+              <td>
+                <div class="campaign-name">Virgin Atlantic — Long-Haul</div>
+                <div class="campaign-sub">Ends in 9 days · £240k contract</div>
+              </td>
+              <td>Spark Foundry</td>
+              <td><span class="channel-chip chip-part">Partner</span><span class="channel-chip chip-direct">Direct</span></td>
+              <td>
+                <div class="score-mini">
+                  <div class="score-mini-bar"><div class="score-mini-fill" style="width: 91%; background: var(--good);"></div></div>
+                  <span class="score-mini-val" style="color: var(--good);">91</span>
+                </div>
+              </td>
+              <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">91% / 88%</td>
+              <td><span class="status-dot ok">On track</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="campaign-name">Samsung — Galaxy Launch</div>
+                <div class="campaign-sub">Ends in 21 days · £420k contract</div>
+              </td>
+              <td>Starcom</td>
+              <td><span class="channel-chip chip-direct">Direct</span><span class="channel-chip chip-prog">Prog</span></td>
+              <td>
+                <div class="score-mini">
+                  <div class="score-mini-bar"><div class="score-mini-fill" style="width: 88%; background: var(--good);"></div></div>
+                  <span class="score-mini-val" style="color: var(--good);">88</span>
+                </div>
+              </td>
+              <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">85% / 84%</td>
+              <td><span class="status-dot ok">On track</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="campaign-name">John Lewis — Homeware SS26</div>
+                <div class="campaign-sub">Ends in 42 days · £195k contract</div>
+              </td>
+              <td>Digitas</td>
+              <td><span class="channel-chip chip-part">Partner</span></td>
+              <td>
+                <div class="score-mini">
+                  <div class="score-mini-bar"><div class="score-mini-fill" style="width: 82%; background: var(--good);"></div></div>
+                  <span class="score-mini-val" style="color: var(--good);">82</span>
+                </div>
+              </td>
+              <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">24% / 22%</td>
+              <td><span class="status-dot ok">On track</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="campaign-name">Tesco — Finest Range</div>
+                <div class="campaign-sub">Ends in 35 days · £280k contract</div>
+              </td>
+              <td>Zenith</td>
+              <td><span class="channel-chip chip-content">Content</span><span class="channel-chip chip-part">Partner</span></td>
+              <td>
+                <div class="score-mini">
+                  <div class="score-mini-bar"><div class="score-mini-fill" style="width: 79%; background: var(--good);"></div></div>
+                  <span class="score-mini-val" style="color: var(--good);">79</span>
+                </div>
+              </td>
+              <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">38% / 40%</td>
+              <td><span class="status-dot ok">On track</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS PAGE -->
+    <div class="page" id="page-campaigns">
+      <div class="card">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Agency</th>
+              <th>Contract</th>
+              <th>Delivered</th>
+              <th>Score</th>
+              <th>Status</th>
+              <th>Days Left</th>
+            </tr>
+          </thead>
+          <tbody id="campaigns-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AUDIENCE PAGE -->
+    <div class="page" id="page-audience">
+      <div class="audience-wrap">
+        <div class="filter-panel">
+          <div class="filter-group">
+            <div class="filter-label">Demographics</div>
+            <div class="filter-chips">
+              <span class="filter-chip">18-24</span>
+              <span class="filter-chip active">25-34</span>
+              <span class="filter-chip active">35-44</span>
+              <span class="filter-chip active">45-54</span>
+              <span class="filter-chip">55-64</span>
+              <span class="filter-chip">65+</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Interest Affinity</div>
+            <div class="filter-chips">
+              <span class="filter-chip active">Food & Drink</span>
+              <span class="filter-chip">Gardening</span>
+              <span class="filter-chip active">Home & Lifestyle</span>
+              <span class="filter-chip">Travel</span>
+              <span class="filter-chip">Tech</span>
+              <span class="filter-chip">Health</span>
+              <span class="filter-chip">Automotive</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Purchase Intent</div>
+            <div class="filter-chips">
+              <span class="filter-chip active">In-market</span>
+              <span class="filter-chip">Researching</span>
+              <span class="filter-chip">Lapsed buyers</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Activation Channel</div>
+            <div class="filter-chips">
+              <span class="filter-chip active">On-site display</span>
+              <span class="filter-chip active">Programmatic</span>
+              <span class="filter-chip active">Meta / Instagram</span>
+              <span class="filter-chip">CTV</span>
+              <span class="filter-chip">Email</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width: 100%; margin-top: 10px;">Activate Segment</button>
+        </div>
+
+        <div>
+          <div class="audience-result">
+            <div class="comm-label">Your Audience</div>
+            <div class="audience-reach">842k</div>
+            <div class="audience-reach-label">Unique first-party users matching criteria</div>
+
+            <div class="audience-breakdown">
+              <div>
+                <div class="ab-stat-label">Logged-in match</div>
+                <div class="ab-stat-val">612k</div>
+              </div>
+              <div>
+                <div class="ab-stat-label">Overlap to client CRM</div>
+                <div class="ab-stat-val">34%</div>
+              </div>
+              <div>
+                <div class="ab-stat-label">Estimated CPM</div>
+                <div class="ab-stat-val">£18.40</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 24px; margin-top: 16px;">
+            <div class="filter-label" style="margin-bottom: 14px;">Reach by masthead</div>
+            <div style="color: var(--ink); font-size: 13px;">
+              <div class="brand-row" style="color: var(--ink);">
+                <span class="brand-name">BBC Good Food</span>
+                <div class="brand-bar-wrap" style="background: var(--line);"><div class="brand-bar" style="width: 85%;"></div></div>
+                <span class="brand-val" style="color: var(--navy);">324k</span>
+              </div>
+              <div class="brand-row" style="color: var(--ink);">
+                <span class="brand-name">Olive</span>
+                <div class="brand-bar-wrap" style="background: var(--line);"><div class="brand-bar" style="width: 58%;"></div></div>
+                <span class="brand-val" style="color: var(--navy);">218k</span>
+              </div>
+              <div class="brand-row" style="color: var(--ink);">
+                <span class="brand-name">Gardeners' World</span>
+                <div class="brand-bar-wrap" style="background: var(--line);"><div class="brand-bar" style="width: 34%;"></div></div>
+                <span class="brand-val" style="color: var(--navy);">128k</span>
+              </div>
+              <div class="brand-row" style="color: var(--ink);">
+                <span class="brand-name">Radio Times</span>
+                <div class="brand-bar-wrap" style="background: var(--line);"><div class="brand-bar" style="width: 28%;"></div></div>
+                <span class="brand-val" style="color: var(--navy);">104k</span>
+              </div>
+              <div class="brand-row" style="color: var(--ink);">
+                <span class="brand-name">Countryfile</span>
+                <div class="brand-bar-wrap" style="background: var(--line);"><div class="brand-bar" style="width: 18%;"></div></div>
+                <span class="brand-val" style="color: var(--navy);">68k</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMISSION PAGE -->
+    <div class="page" id="page-commission">
+      <div class="comm-hero">
+        <div class="comm-label">Q2 2026 Pod Pool</div>
+        <div class="comm-pool">£142<span class="unit">k</span></div>
+        <div class="comm-sub">Tracking +8% vs Q1 · Projected final: £168k if current pace holds</div>
+      </div>
+
+      <div class="comm-members">
+        <div style="padding-bottom: 14px; border-bottom: 2px solid var(--navy); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h4 style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 20px; color: var(--navy);">Pod Members</h4>
+            <p style="font-size: 11px; color: var(--muted); margin-top: 2px;">Transparent by default. Everyone sees everyone.</p>
+          </div>
+          <span class="chip">Base + Multiplier Model</span>
+        </div>
+
+        <div class="member-row" style="border-bottom: 1px solid var(--line); padding: 10px 0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 700;">
+          <div></div>
+          <div>Member</div>
+          <div>Contribution Metric</div>
+          <div style="text-align: center;">Multiplier</div>
+          <div style="text-align: right;">Projected Payout</div>
+        </div>
+
+        <div class="member-row">
+          <div class="avatar" style="background: var(--sky); color: var(--navy); width: 36px; height: 36px;">R</div>
+          <div>
+            <div class="member-name">Rachel</div>
+            <div class="member-role">Commercial Lead</div>
+          </div>
+          <div class="member-metric">
+            <div>Net new revenue</div>
+            <div class="val">£1.2m / £1.4m target</div>
+          </div>
+          <div class="member-multi">1.15×</div>
+          <div class="member-payout">£48.3k</div>
+        </div>
+
+        <div class="member-row">
+          <div class="avatar" style="background: var(--good); color: var(--paper); width: 36px; height: 36px;">M</div>
+          <div>
+            <div class="member-name">Marnie</div>
+            <div class="member-role">Delivery Lead</div>
+          </div>
+          <div class="member-metric">
+            <div>Delivery accuracy</div>
+            <div class="val">96.2% avg across pod</div>
+          </div>
+          <div class="member-multi">1.22×</div>
+          <div class="member-payout">£41.8k</div>
+        </div>
+
+        <div class="member-row">
+          <div class="avatar" style="background: var(--warn); color: var(--paper); width: 36px; height: 36px;">E</div>
+          <div>
+            <div class="member-name">Elena</div>
+            <div class="member-role">Insights</div>
+          </div>
+          <div class="member-metric">
+            <div>Campaign lift vs baseline</div>
+            <div class="val">+14% avg</div>
+          </div>
+          <div class="member-multi">1.08×</div>
+          <div class="member-payout">£28.2k</div>
+        </div>
+
+        <div class="member-row">
+          <div class="avatar" style="background: var(--navy); color: var(--paper); width: 36px; height: 36px;">I</div>
+          <div>
+            <div class="member-name">Isabelle</div>
+            <div class="member-role">Audience</div>
+          </div>
+          <div class="member-metric">
+            <div>Audience activation volume</div>
+            <div class="val">8 segments · 2.1m reach</div>
+          </div>
+          <div class="member-multi">1.12×</div>
+          <div class="member-payout">£23.7k</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEKLY REPORT PAGE -->
+    <div class="page" id="page-report">
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="btn btn-primary">📥 Download PDF</button>
+        <button class="btn btn-secondary">✉ Email to Leadership</button>
+        <button class="btn btn-secondary">📋 Copy to Clipboard</button>
+        <button class="btn btn-secondary">🔄 Regenerate</button>
+      </div>
+
+      <div class="report-card">
+        <div class="report-header">
+          <div class="report-title-block">
+            <h2>Weekly Pod Report</h2>
+            <div class="report-meta-row">
+              <span><strong>Publicis Pod</strong></span>
+              <span>Week 16 · 13–17 Apr 2026</span>
+              <span>Auto-generated · 08:00 Mon</span>
+            </div>
+          </div>
+          <div class="logo-mark" style="color: var(--navy); font-size: 24px;">COHORT<span style="color: var(--sky);">.</span></div>
+        </div>
+
+        <div class="report-stats">
+          <div class="report-stat">
+            <div class="report-stat-label">Delivered Revenue</div>
+            <div class="report-stat-val">£184k</div>
+            <div class="report-stat-delta" style="color: var(--good);">↑ 12% w/w</div>
+          </div>
+          <div class="report-stat">
+            <div class="report-stat-label">Delivery Confidence</div>
+            <div class="report-stat-val">87</div>
+            <div class="report-stat-delta" style="color: var(--good);">↑ 4 pts</div>
+          </div>
+          <div class="report-stat">
+            <div class="report-stat-label">Active Campaigns</div>
+            <div class="report-stat-val">12</div>
+            <div class="report-stat-delta" style="color: var(--muted);">+1 this week</div>
+          </div>
+          <div class="report-stat">
+            <div class="report-stat-label">At Risk Value</div>
+            <div class="report-stat-val">£60k</div>
+            <div class="report-stat-delta" style="color: var(--risk);">Audi Easter</div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h4>Executive Summary</h4>
+          <p>Pod performance this week was <strong>ahead of target</strong>, with delivered revenue of £184k (+12% w/w) and Delivery Confidence rising 4 points to 87. The quarter is tracking at +8% vs Q1, projecting £168k in pod commission if pace holds.</p>
+          <p>One campaign requires immediate intervention: the Audi Easter Drive (Starcom) is underdelivering at 54 points, with £60k of contracted value at risk over the next 14 days. The platform has surfaced a recommended inventory reallocation projected to recover 18% of the shortfall.</p>
+        </div>
+
+        <div class="report-section">
+          <h4>Delivery Highlights</h4>
+          <ul>
+            <li><strong>Virgin Atlantic Long-Haul</strong> — tracking 3% ahead of target, renewal conversation flagged for Q3 (£64k opportunity).</li>
+            <li><strong>Samsung Galaxy Launch</strong> — pacing consistently, Delivery Score 88.</li>
+            <li><strong>John Lewis Homeware SS26</strong> — strong early pacing at 82 Delivery Score, partnership content performing +14% vs baseline.</li>
+          </ul>
+        </div>
+
+        <div class="report-section">
+          <h4>Risk Register</h4>
+          <ul>
+            <li><strong>Audi Easter Drive</strong> — At Risk Now, 33% underdelivery against 63k impression target. Action queued: reallocate inventory from 22–28 April. Decision required by Friday.</li>
+            <li><strong>Waitrose Summer Fresh</strong> — At Risk Soon, trending -9%. Action queued: activate 'Foodies 35+' segment. +12% projected recovery.</li>
+          </ul>
+        </div>
+
+        <div class="report-section">
+          <h4>Pipeline & New Business</h4>
+          <p>Two new opportunities entered pipeline this week: <strong>BMW EV Launch</strong> (Starcom, est. £220k, Q3 window) and <strong>M&S Christmas Food</strong> (Zenith, est. £380k, Q4 window). Total pipeline weighted value now £1.84m against Q3 target of £2.1m.</p>
+        </div>
+
+        <div class="report-section">
+          <h4>Pod Health</h4>
+          <p>All four pod roles tracking above baseline this quarter. Delivery accuracy has climbed to 96.2% following the Audi intervention playbook adopted two weeks ago. Next pod review: Thursday 24 April.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTEGRATIONS PAGE -->
+    <div class="page" id="page-integrations">
+      <div class="integrations-grid">
+        <div class="integration-card">
+          <div class="int-header">
+            <div class="int-logo" style="background: #00A1E0; color: white;">SF</div>
+            <div class="int-info">
+              <h5>Salesforce</h5>
+              <p>Direct sales CRM · Pipeline, accounts, contracts</p>
+            </div>
+          </div>
+          <div class="int-status"><span>Last sync</span><span class="val">4 minutes ago</span></div>
+          <div class="int-status"><span>Records ingested (24h)</span><span class="val">2,847</span></div>
+          <div class="int-status"><span>Status</span><span class="val" style="color: var(--good);">● Healthy</span></div>
+        </div>
+
+        <div class="integration-card">
+          <div class="int-header">
+            <div class="int-logo" style="background: #4285F4; color: white;">G</div>
+            <div class="int-info">
+              <h5>Google Ad Manager</h5>
+              <p>Direct ad serving · Delivery, pacing, inventory</p>
+            </div>
+          </div>
+          <div class="int-status"><span>Last sync</span><span class="val">2 minutes ago</span></div>
+          <div class="int-status"><span>Impressions ingested (24h)</span><span class="val">184.2m</span></div>
+          <div class="int-status"><span>Status</span><span class="val" style="color: var(--good);">● Healthy</span></div>
+        </div>
+
+        <div class="integration-card">
+          <div class="int-header">
+            <div class="int-logo" style="background: #1a1a1a; color: white;">A</div>
+            <div class="int-info">
+              <h5>Atomic</h5>
+              <p>Programmatic SSP · Prog revenue, yield</p>
+            </div>
+          </div>
+          <div class="int-status"><span>Last sync</span><span class="val">6 minutes ago</span></div>
+          <div class="int-status"><span>Revenue ingested (24h)</span><span class="val">£48,200</span></div>
+          <div class="int-status"><span>Status</span><span class="val" style="color: var(--good);">● Healthy</span></div>
+        </div>
+
+        <div class="integration-card">
+          <div class="int-header">
+            <div class="int-logo" style="background: #107C41; color: white;">XL</div>
+            <div class="int-info">
+              <h5>Excel / Partnerships</h5>
+              <p>Sheet-based tracking · Partnerships, content, bespoke</p>
+            </div>
+          </div>
+          <div class="int-status"><span>Last sync</span><span class="val">1 hour ago</span></div>
+          <div class="int-status"><span>Rows ingested (24h)</span><span class="val">142</span></div>
+          <div class="int-status"><span>Status</span><span class="val" style="color: var(--warn);">● Sync lag</span></div>
+        </div>
+
+        <div class="integration-card">
+          <div class="int-header">
+            <div class="int-logo" style="background: #FF3E00; color: white;">M</div>
+            <div class="int-info">
+              <h5>Monday.com</h5>
+              <p>Delivery workflow · Campaign ops, creative</p>
+            </div>
+          </div>
+          <div class="int-status"><span>Last sync</span><span class="val">12 minutes ago</span></div>
+          <div class="int-status"><span>Tasks ingested (24h)</span><span class="val">318</span></div>
+          <div class="int-status"><span>Status</span><span class="val" style="color: var(--good);">● Healthy</span></div>
+        </div>
+
+        <div class="integration-card">
+          <div class="int-header">
+            <div class="int-logo" style="background: #4A154B; color: white;">S</div>
+            <div class="int-info">
+              <h5>Slack</h5>
+              <p>Notifications · Pod alerts, intervention pings</p>
+            </div>
+          </div>
+          <div class="int-status"><span>Last sync</span><span class="val">Real-time</span></div>
+          <div class="int-status"><span>Alerts sent (24h)</span><span class="val">14</span></div>
+          <div class="int-status"><span>Status</span><span class="val" style="color: var(--good);">● Healthy</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CAMPAIGN DETAIL MODAL -->
+<div class="modal-overlay" id="campaignModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Audi — Easter Drive</div>
+        <div class="modal-sub" id="modalSub">Starcom · Direct + Programmatic · £180k contract · Ends 1 May 2026</div>
+      </div>
+      <button class="close-btn" onclick="closeCampaign()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-stat">
+          <div class="detail-stat-label">Delivered</div>
+          <div class="detail-stat-val" id="modalDelivered">42.1k</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-label">Target</div>
+          <div class="detail-stat-val" id="modalTarget">63k</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-label">Delivery Score</div>
+          <div class="detail-stat-val" id="modalScore" style="color: var(--risk);">54</div>
+        </div>
+      </div>
+
+      <div class="trajectory">
+        <div class="trajectory-title">14-day trajectory vs target</div>
+        <div class="trajectory-chart">
+          <svg viewBox="0 0 600 140" preserveAspectRatio="none">
+            <line x1="0" y1="20" x2="600" y2="20" stroke="#0E2A5C" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+            <text x="10" y="14" font-family="JetBrains Mono" font-size="9" fill="#6B7A93">Target line</text>
+
+            <path d="M 0 40 Q 100 42 180 50 T 340 80 T 600 118" stroke="#E53E5C" stroke-width="2.5" fill="none"/>
+            <path d="M 0 40 Q 100 42 180 50 T 340 80 T 600 118" stroke="#E53E5C" stroke-width="2.5" fill="none" stroke-dasharray="4 4" opacity="0.4" transform="translate(0, 8)"/>
+
+            <circle cx="600" cy="118" r="5" fill="#E53E5C"/>
+            <text x="595" y="134" font-family="JetBrains Mono" font-size="9" fill="#E53E5C" text-anchor="end">today: -33%</text>
+
+            <path d="M 0 40 L 600 20" stroke="#0E2A5C" stroke-width="1.5" fill="none" opacity="0.6"/>
+
+            <text x="0" y="140" font-family="JetBrains Mono" font-size="9" fill="#6B7A93">Day 1</text>
+            <text x="300" y="140" font-family="JetBrains Mono" font-size="9" fill="#6B7A93" text-anchor="middle">Day 7</text>
+            <text x="600" y="140" font-family="JetBrains Mono" font-size="9" fill="#6B7A93" text-anchor="end">Day 14</text>
+          </svg>
+        </div>
+      </div>
+
+      <h4 style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 18px; color: var(--navy); margin-bottom: 12px;">Recommended Interventions</h4>
+
+      <div class="intervention-list">
+        <div class="intervention">
+          <div class="intervention-icon">⟲</div>
+          <div class="intervention-text">
+            <div class="intervention-title">Reallocate inventory from 22–28 April</div>
+            <div class="intervention-meta">Move 14k impressions from low-CTR placements to BBC Good Food homepage</div>
+          </div>
+          <div class="intervention-impact">+18% pred.</div>
+          <button class="btn btn-primary" style="font-size: 11px;">Apply</button>
+        </div>
+
+        <div class="intervention">
+          <div class="intervention-icon">◈</div>
+          <div class="intervention-text">
+            <div class="intervention-title">Activate 'Premium Automotive Intenders' segment</div>
+            <div class="intervention-meta">142k first-party users · 34% CRM overlap</div>
+          </div>
+          <div class="intervention-impact">+9% pred.</div>
+          <button class="btn btn-primary" style="font-size: 11px;">Apply</button>
+        </div>
+
+        <div class="intervention">
+          <div class="intervention-icon">✉</div>
+          <div class="intervention-text">
+            <div class="intervention-title">Escalate to Starcom — Karen Lee</div>
+            <div class="intervention-meta">Flag delivery gap, offer make-good window extension</div>
+          </div>
+          <div class="intervention-impact">Relationship</div>
+          <button class="btn btn-secondary" style="font-size: 11px;">Draft email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Page switching
+  const pages = {
+    home: { title: 'Publicis Pod / Home', sub: 'Starcom · Zenith · Spark · Digitas · Publicis Media' },
+    campaigns: { title: 'Campaigns', sub: 'All active campaigns across pod portfolio' },
+    audience: { title: 'Audience Studio', sub: 'Segment and activate first-party audiences' },
+    commission: { title: 'Pod Commission', sub: 'Transparent shared pool with individual multipliers' },
+    report: { title: 'Weekly Report', sub: 'Auto-generated every Monday 08:00' },
+    integrations: { title: 'Data Integrations', sub: 'Live sync from Salesforce, GAM, Atomic, Excel, Monday, Slack' },
+  };
+
+  function switchPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const nav = document.querySelector('[data-page="' + name + '"]');
+    if (nav) nav.classList.add('active');
+    document.getElementById('page-title').textContent = pages[name].title;
+    document.getElementById('page-sub').textContent = pages[name].sub;
+    window.scrollTo(0,0);
+    document.querySelector('.main-container').scrollTo(0,0);
+  }
+
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => switchPage(item.dataset.page));
+  });
+
+  // Campaign modal
+  const campaignData = {
+    audi: { title: 'Audi — Easter Drive', sub: 'Starcom · Direct + Programmatic · £180k contract · Ends 1 May 2026', delivered: '42.1k', target: '63k', score: '54', scoreColor: 'var(--risk)' },
+    waitrose: { title: 'Waitrose — Summer Fresh', sub: 'Zenith · Content + Partnership · £310k contract · Ends 15 May 2026', delivered: '380k', target: '540k', score: '71', scoreColor: 'var(--warn)' },
+    virgin: { title: 'Virgin Atlantic — Long-Haul', sub: 'Spark Foundry · Partnership + Direct · £240k contract · Ends 26 April 2026', delivered: '218k', target: '240k', score: '91', scoreColor: 'var(--good)' },
+  };
+
+  function openCampaign(key) {
+    const c = campaignData[key];
+    if (!c) return;
+    document.getElementById('modalTitle').textContent = c.title;
+    document.getElementById('modalSub').textContent = c.sub;
+    document.getElementById('modalDelivered').textContent = c.delivered;
+    document.getElementById('modalTarget').textContent = c.target;
+    document.getElementById('modalScore').textContent = c.score;
+    document.getElementById('modalScore').style.color = c.scoreColor;
+    document.getElementById('campaignModal').classList.add('open');
+  }
+
+  function closeCampaign() {
+    document.getElementById('campaignModal').classList.remove('open');
+  }
+
+  document.getElementById('campaignModal').addEventListener('click', (e) => {
+    if (e.target.id === 'campaignModal') closeCampaign();
+  });
+
+  // Build full campaigns table
+  const allCampaigns = [
+    { name: 'Audi — Easter Drive', agency: 'Starcom', contract: '£180k', delivered: '£96k', score: 54, status: 'risk', days: 14, key: 'audi' },
+    { name: 'Waitrose — Summer Fresh', agency: 'Zenith', contract: '£310k', delivered: '£220k', score: 71, status: 'warn', days: 28, key: 'waitrose' },
+    { name: 'Virgin Atlantic — Long-Haul', agency: 'Spark Foundry', contract: '£240k', delivered: '£218k', score: 91, status: 'ok', days: 9, key: 'virgin' },
+    { name: 'Samsung — Galaxy Launch', agency: 'Starcom', contract: '£420k', delivered: '£356k', score: 88, status: 'ok', days: 21 },
+    { name: 'John Lewis — Homeware SS26', agency: 'Digitas', contract: '£195k', delivered: '£48k', score: 82, status: 'ok', days: 42 },
+    { name: 'Tesco — Finest Range', agency: 'Zenith', contract: '£280k', delivered: '£108k', score: 79, status: 'ok', days: 35 },
+    { name: 'Sainsbury\'s — Taste the Difference', agency: 'MediaCom', contract: '£165k', delivered: '£142k', score: 84, status: 'ok', days: 18 },
+    { name: 'BBC Studios — Drama Launch', agency: 'OMD', contract: '£95k', delivered: '£91k', score: 93, status: 'ok', days: 6 },
+    { name: 'Lurpak — Butter Campaign', agency: 'Digitas', contract: '£145k', delivered: '£118k', score: 86, status: 'ok', days: 24 },
+    { name: 'Toyota — Hybrid Range', agency: 'Zenith', contract: '£260k', delivered: '£198k', score: 77, status: 'warn', days: 31 },
+    { name: 'National Trust — Summer Memberships', agency: 'Starcom', contract: '£85k', delivered: '£52k', score: 81, status: 'ok', days: 20 },
+    { name: 'Whittard of Chelsea — Gift Season', agency: 'Digitas', contract: '£110k', delivered: '£14k', score: 78, status: 'ok', days: 56 },
+  ];
+
+  const tableBody = document.getElementById('campaigns-table-body');
+  if (tableBody) {
+    allCampaigns.forEach(c => {
+      const statusColor = c.status === 'ok' ? 'var(--good)' : c.status === 'warn' ? 'var(--warn)' : 'var(--risk)';
+      const statusLabel = c.status === 'ok' ? 'On track' : c.status === 'warn' ? 'Watch' : 'At risk';
+      tableBody.innerHTML += `
+        <tr ${c.key ? `onclick="openCampaign('${c.key}')"` : ''}>
+          <td><div class="campaign-name">${c.name}</div></td>
+          <td>${c.agency}</td>
+          <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--navy);">${c.contract}</td>
+          <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink);">${c.delivered}</td>
+          <td>
+            <div class="score-mini">
+              <div class="score-mini-bar"><div class="score-mini-fill" style="width: ${c.score}%; background: ${statusColor};"></div></div>
+              <span class="score-mini-val" style="color: ${statusColor};">${c.score}</span>
+            </div>
+          </td>
+          <td><span class="status-dot ${c.status}">${statusLabel}</span></td>
+          <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">${c.days}d</td>
+        </tr>`;
+    });
+  }
+</script>
+
+</body>
+</html>
