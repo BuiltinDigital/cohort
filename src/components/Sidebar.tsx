@@ -7,13 +7,13 @@ import { RoleSwitcher } from '@/components/ui/RoleSwitcher';
 import {
   LayoutDashboard, Target, TrendingUp, PoundSterling,
   Building2, Users, BarChart3, ArrowUpDown, PieChart,
-  Clock, Star, Crosshair, FileText, Plug,
+  Clock, Star, Crosshair, FileText, Plug, Smartphone,
   Sparkles, X, Menu,
 } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, Target, TrendingUp, PoundSterling,
-  Building2, Users, BarChart3, ArrowUpDown, PieChart,
+  Building2, Users, BarChart3, ArrowUpDown, PieChart, Smartphone,
   Clock, Star, Crosshair, FileText, Plug,
 };
 

@@ -18,6 +18,7 @@ import { CampaignsPage } from '@/components/pages/CampaignsPage';
 import { CommissionPage } from '@/components/pages/CommissionPage';
 import { WeeklyReport } from '@/components/pages/WeeklyReport';
 import { IntegrationsPage } from '@/components/pages/IntegrationsPage';
+import { DevicesPage } from '@/components/pages/DevicesPage';
 
 interface PageConfig {
   title: string;
@@ -40,6 +41,7 @@ const pageConfigs: Record<string, PageConfig> = {
   audience: { title: 'Audience Studio', subtitle: 'Segment and activate first-party audiences' },
   report: { title: 'Weekly Report', subtitle: 'Auto-generated every Monday 08:00' },
   integrations: { title: 'Data Integrations', subtitle: 'Salesforce · GAM · Adomic · Excel · Monday · Slack · Nielsen · Comscore' },
+  devices: { title: 'Device Previews', subtitle: 'How Cohort looks on iPhone and iPad' },
 };
 
 export default function Home() {
@@ -87,6 +89,7 @@ export default function Home() {
       case 'audience': return <AudienceStudio onNavigate={navigate} />;
       case 'report': return <WeeklyReport onNavigate={navigate} />;
       case 'integrations': return <IntegrationsPage onNavigate={navigate} />;
+      case 'devices': return <DevicesPage onNavigate={navigate} />;
       default: return <TeamOverview onNavigate={navigate} />;
     }
   };

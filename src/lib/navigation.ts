@@ -49,6 +49,7 @@ export const navigation: NavSection[] = [
     items: [
       { label: 'Weekly Report', page: 'report', icon: 'FileText', badge: 'New', badgeVariant: 'risk' },
       { label: 'Integrations', page: 'integrations', icon: 'Plug' },
+      { label: 'Devices', page: 'devices', icon: 'Smartphone' },
     ],
   },
 ];
